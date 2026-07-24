@@ -1,7 +1,17 @@
+import os
+
 from vllm import LLM, SamplingParams
 
+# vLLM API key
+api_key = os.environ.get("VLLM_API_KEY", "your_vllm_api_key_here")
+
 # Initialize the model
-llm = LLM(model="mistralai/Devstral-Small-2-24B-Instruct-2512", dtype="auto", gpu_memory_utilization=0.9)
+llm = LLM(
+    model="mistralai/Devstral-Small-2-24B-Instruct-2512",
+    dtype="auto",
+    gpu_memory_utilization=0.9,
+    api_key=api_key,
+)
 
 # Define sampling parameters
 sampling_params = SamplingParams(
