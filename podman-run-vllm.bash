@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Configuration
-MODEL="${MODEL:-mistralai/Mistral-7B-Instruct-v0.3}"
+MODEL="${MODEL:-mistralai/Devstral-Small-2507}"
 PORT="${PORT:-8000}"
 CONTAINER_NAME="${CONTAINER_NAME:-vllm-openai}"
 HF_CACHE="${HF_CACHE:-$HOME/.cache/huggingface}"
