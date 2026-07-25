@@ -7,7 +7,7 @@ api_key = os.environ.get("VLLM_API_KEY", "your_vllm_api_key_here")
 
 # Initialize the model
 llm = LLM(
-    model="mistralai/Devstral-Small-2-24B-Instruct-2512",
+    model="mistralai/Mistral-7B-Instruct-v0.3",
     dtype="auto",
     gpu_memory_utilization=0.9,
     api_key=api_key,
