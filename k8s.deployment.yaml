@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-server
+  labels:
+    app: vllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm
+  template:
+    metadata:
+      labels:
+        app: vllm
+    spec:
+      runtimeClassName: nvidia
+      containers:
+        - name: vllm
+          image: vllm/vllm-openai:latest
+          args:
+            - "--model"
+            - "meta-llama/Llama-3.1-8B-Instruct"
+            - "--gpu-memory-utilization"
+            - "0.90"
+            - "--max-model-len"
+            - "8192"
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: HUGGING_FACE_HUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hf-token
+                  key: token
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "compute,utility"
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              memory: "32Gi"
+              cpu: "8"
+            requests:
+              nvidia.com/gpu: 1
+              memory: "16Gi"
+              cpu: "4"
+          volumeMounts:
+            - name: model-cache
+              mountPath: /root/.cache/huggingface
+            - name: shm
+              mountPath: /dev/shm
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 120
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 5
+      volumes:
+        - name: model-cache
+          persistentVolumeClaim:
+            claimName: vllm-model-cache
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: "8Gi"
+      nodeSelector:
+        nvidia.com/gpu.present: "true"
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-service
+spec:
+  selector:
+    app: vllm
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: http
+  type: ClusterIP
