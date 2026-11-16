@@ -1,6 +1,7 @@
 mkdir -p $(pwd)/webui_data
 
 podman run --detach --pull newer --replace --publish 8080:8080 \
+  --add-host=host.containers.internal:host-gateway \
   -e OPENAI_API_BASE_URL=http://host.containers.internal:8000/v1 -e OPENAI_API_KEY=vllmApikey \
   -e WEBUI_SECRET_KEY=change-me-to-a-long-random-secret -e ENABLE_SIGNUP=false \
   -e WEBUI_ADMIN_EMAIL="admin@openwebui.local" \
