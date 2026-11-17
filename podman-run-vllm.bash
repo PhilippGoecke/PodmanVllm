@@ -34,7 +34,8 @@ podman run -d \
   --served-model-name mistral-7b \
   --host 0.0.0.0 \
   --port 8000 \
-  --api-key "$API_KEY"
+  --api-key "$API_KEY" \
+  --log-level debug
 
 echo "vLLM OpenAI server starting at http://localhost:${PORT}/v1"
 echo "API key: ${API_KEY}"
