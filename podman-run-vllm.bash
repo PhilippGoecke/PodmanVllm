@@ -35,6 +35,7 @@ podman run -d \
   --host 0.0.0.0 \
   --port 8000 \
   --api-key "$API_KEY" \
+  --uvicorn-log-level debug \
   --log-level debug
 
 echo "vLLM OpenAI server starting at http://localhost:${PORT}/v1"
