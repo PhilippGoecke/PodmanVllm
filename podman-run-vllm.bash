@@ -29,6 +29,7 @@ podman run -d \
   --model "$MODEL" \
   --max-model-len 65536 \
   --max-num-seqs 64 \
+  --enable-chunked-prefill \
   --gpu-memory-utilization 0.92 \
   --enable-prefix-caching \
   --enable-auto-tool-choice \
