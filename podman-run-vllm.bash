@@ -27,10 +27,12 @@ podman run -d \
   --ipc=host \
   "$IMAGE" \
   --model "$MODEL" \
-  --max-model-len 16384 \
+  --max-model-len 65536 \
   --max-num-seqs 64 \
   --gpu-memory-utilization 0.92 \
   --enable-prefix-caching \
+  --enable-auto-tool-choice \
+  --tool-call-parser hermes \
   --served-model-name mistral-7b \
   --host 0.0.0.0 \
   --port 8000 \
