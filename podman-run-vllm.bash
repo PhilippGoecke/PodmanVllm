@@ -20,10 +20,10 @@ podman run -d \
   --security-opt=label=disable \
   --env LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/local/cuda/lib64 \
   --volume /dev/null:/etc/ld.so.conf.d/00-cuda-compat.conf:ro \
-  -p "${PORT}:8000" \
-  -v "${HF_CACHE}:/root/.cache/huggingface:Z" \
+  --publish "${PORT}:8000" \
+  --volume "${HF_CACHE}:/root/.cache/huggingface:Z" \
   ${HF_TOKEN:+-e "HF_TOKEN=${HF_TOKEN}"} \
-  -e "VLLM_API_KEY=${API_KEY}" \
+  --env "VLLM_API_KEY=${API_KEY}" \
   --ipc=host \
   "$IMAGE" \
   --model "$MODEL" \
@@ -45,3 +45,32 @@ echo "vLLM OpenAI server starting at http://localhost:${PORT}/v1"
 echo "API key: ${API_KEY}"
 echo "Logs: podman logs -f ${CONTAINER_NAME}"
 podman logs -f ${CONTAINER_NAME}
+
+# Continue config example (~/.continue/config.yaml):
+# models:
+#   - name: mistral-7b
+#     provider: openai
+#     model: mistral-7b
+#     apiBase: http://localhost:${PORT}/v1
+#     apiKey: ${API_KEY}
+
+# OpenCode config example (~/.config/opencode/opencode.json):
+# {
+#   "$schema": "https://opencode.ai/config.json",
+#   "provider": {
+#     "vllm": {
+#       "npm": "@ai-sdk/openai-compatible",
+#       "name": "vLLM",
+#       "options": {
+#         "baseURL": "http://localhost:${PORT}/v1",
+#         "apiKey": "${API_KEY}"
+#       },
+#       "models": {
+#         "mistral-7b": {
+#           "name": "Mistral 7B"
+#         }
+#       }
+#     }
+#   }
+# }
+
